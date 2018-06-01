@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Reader from "../Reader";
 import ToggleButtons, { TYPES } from "../toggleButton";
+import Controls from "../controls";
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -10,7 +11,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      playing: true,
+      playing: false,
       wps: 6,
       word: -1,
       input: TYPES.TEXT,
@@ -37,6 +38,9 @@ class App extends Component {
     this.addHighlight = this.addHighlight.bind(this);
     this.spaceDown = this.spaceDown.bind(this);
     this.spaceUp = this.spaceUp.bind(this);
+    this.togglePlaying = this.togglePlaying.bind(this);
+    this.speedUp = this.speedUp.bind(this);
+    this.slowDown = this.slowDown.bind(this);
   }
 
   extractText(text) {
@@ -137,6 +141,9 @@ class App extends Component {
       });
     }
   }
+  togglePlaying() {
+    this.setState({ playing: !this.state.playing });
+  }
 
   spaceDown() {
     if (!this.state.spaceDown) {
@@ -152,19 +159,25 @@ class App extends Component {
   spaceUp() {
     if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
     if (this.state.playToggleFlag)
-      this.setState({ playing: !this.state.playing });
+      this.togglePlaying();
     this.endHighlight();
 
     this.setState({ spaceDown: false });
   }
 
+  speedUp() {
+    this.setState({ wps: this.state.wps + 1 });
+  }
+  slowDown() {
+    this.setState({ wps: Math.max(1, this.state.wps - 1) });
+  }
   onKeyDown(ev) {
     if (ev.code === "Space") {
       this.spaceDown();
     } else if (ev.code === "ArrowUp") {
-      this.setState({ wps: this.state.wps + 1 });
+      this.speedUp();
     } else if (ev.code === "ArrowDown") {
-      this.setState({ wps: Math.max(1, this.state.wps - 1) });
+      this.slowDown();
     } else if (ev.code === "ArrowRight") {
       this.nextBreak();
     } else if (ev.code === "ArrowLeft") {
@@ -224,6 +237,13 @@ class App extends Component {
           <p>playing: {playing ? "true" : "false"}</p>
         </div>
         <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
+        <Controls
+          togglePlaying={this.togglePlaying}
+          playing={this.state.playing}
+          speedUp={this.speedUp}
+          slowDown={this.slowDown}
+          wps={this.state.wps}
+        />
       </div>
     );
   }

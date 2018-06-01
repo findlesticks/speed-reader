@@ -9,7 +9,7 @@ export const TYPES = {
 const orange = '#e9711c';
 const blue = '#007398';
 
-const StyledButton = styled.button`
+export const StyledButton = styled.button`
   border: 2px solid;
   display: inline-block;
   font-family: inherit;
@@ -20,21 +20,27 @@ const StyledButton = styled.button`
   padding: 0 16px;
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
   user-select: none;
-  background-color: ${props => props.selected ? '#e9711c' : '#007398'};
-  border-color: ${props => props.selected ? '#e9711c' : '#007398'};
+  background-color: ${props => props.selected ? orange : blue};
+  border-color: ${props => props.selected ? orange : blue};
   color: #ffffff;
   cursor: pointer;
-  margin-right: 8px;
+  margin: 8px;
   font-size: 16px;
   &:hover {
-    border-color: #e9711c;
-    background-color: #e9711c;
+    border-color: ${orange};
+    background-color: ${orange};
   }
+`;
+
+export const CentredNav = styled.nav`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 export default function ToggleButtons({ setInput, inputType }) {
   return (
-    <div>
+    <CentredNav>
       <StyledButton
         onClick={() => setInput(TYPES.ABSTRACT)}
         selected={inputType === TYPES.ABSTRACT}
@@ -43,6 +49,6 @@ export default function ToggleButtons({ setInput, inputType }) {
         onClick={() => setInput(TYPES.TEXT)}
         selected={inputType === TYPES.TEXT}
       >{TYPES.TEXT}</StyledButton>
-    </div>
+    </CentredNav>
   )
 }
