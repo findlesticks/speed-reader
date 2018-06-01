@@ -38,7 +38,7 @@ class App extends Component {
     let words;
     if (text) {
       paras = text.split(/\./).map(para => {
-        return para.props.children.split(/\s+/).length;
+        return para.split(/\s+/).length;
       });
       words = text.split(/\s+/).concat("END");
     }
