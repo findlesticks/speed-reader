@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Reader from "../Reader";
 
 let timeoutInd;
+let playToggleFlagTimeout;
 
 class App extends Component {
   constructor(props) {
@@ -23,28 +24,29 @@ class App extends Component {
     this.nextBreak = this.nextBreak.bind(this);
     this.prevBreak = this.prevBreak.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+
+    this.startHighlight = this.startHighlight.bind(this);
+    this.endHighlight = this.endHighlight.bind(this);
+    this.getHighlights = this.getHighlights.bind(this);
+    this.addHighlight = this.addHighlight.bind(this);
+    this.spaceDown = this.spaceDown.bind(this);
+    this.spaceUp = this.spaceUp.bind(this);
   }
 
   extractText(text) {
     let paras;
     let words;
-    if (text && text.props && text.props.children) {
-      console.log(text.props.children);
-      paras = text.props.children.map(para => {
+    if (text) {
+      paras = text.split(/\./).map(para => {
         return para.props.children.split(/\s+/).length;
       });
-      words = text.props.children
-        .reduce(
-          (oldArr, para) =>
-            oldArr.concat(para.props.children.split(/\s+/), [""]),
-          []
-        )
-        .concat("END");
+      words = text.split(/\s+/).concat("END");
     }
 
     return {
       words: words,
-      breaks: paras
+      breaks: paras,
+      highlights: []
     };
   }
 
@@ -80,7 +82,7 @@ class App extends Component {
     let nextBreak = 0;
     let i = 0;
     do {
-      nextBreak += breaks[i] + 1;
+      nextBreak += breaks[i];
       i++;
     } while (nextBreak < word);
 
@@ -91,16 +93,53 @@ class App extends Component {
     const breaks = this.getBreaks();
     let nextBreak = 0;
     let i = 0;
-    while (nextBreak + breaks[i] + 1 < word) {
-      nextBreak += breaks[i] + 1;
+    while (nextBreak + breaks[i] < word) {
+      nextBreak += breaks[i];
       i++;
     }
 
     this.setState({ word: nextBreak });
   }
+
+  startHighlight() {
+    this.setState({ highlight: false });
+  }
+  endHighlight() {
+    this.setState({ highlight: false });
+  }
+  getHighlights() {
+    const { inputs, input } = this.state;
+    return inputs[input] ? inputs[input].highlights : [];
+  }
+  addHighlight(word) {
+    const { inputs, input } = this.state;
+    const highlight = inputs[input] ? inputs[input].highlights : [];
+    highlight.push(word);
+    this.setState({
+      inputs: Object.assign({}, inputs, {
+        highlights: highlight
+      })
+    });
+  }
+
+  spaceDown() {
+    this.setState({ playToggleFlag: true });
+    if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
+    playToggleFlagTimeout = this.setTimeout(() => {
+      this.setState({ playToggleFlag: false });
+      this.startHighlight();
+    }, 100);
+  }
+  spaceUp() {
+    if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
+    if (this.state.playToggleFlag)
+      this.setState({ playing: !this.state.playing });
+    this.endHighlight();
+  }
+
   onKeyDown(ev) {
     if (ev.code === "Space") {
-      this.setState({ playing: !this.state.playing });
+      this.spaceDown();
     } else if (ev.code === "ArrowUp") {
       this.setState({ wps: this.state.wps + 1 });
     } else if (ev.code === "ArrowDown") {
@@ -114,10 +153,12 @@ class App extends Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.onKeyDown);
+    document.addEventListener("keyup", this.onKeyDown);
     this.nextWord();
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.onKeyDown);
+    document.removeEventListener("keyup", this.onKeyDown);
     if (this.timeoutInd) clearTimeout(this.timeoutInd);
   }
   componentDidUpdate(props, state) {
