@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Reader from "../Reader";
 import ToggleButtons, { TYPES } from "../toggleButton";
 import Controls from "../controls";
+import Highlights from "../Highlights";
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -158,8 +159,7 @@ class App extends Component {
   }
   spaceUp() {
     if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
-    if (this.state.playToggleFlag)
-      this.togglePlaying();
+    if (this.state.playToggleFlag) this.togglePlaying();
     this.endHighlight();
 
     this.setState({ spaceDown: false });
@@ -236,7 +236,9 @@ class App extends Component {
           <p>word: {word}</p>
           <p>playing: {playing ? "true" : "false"}</p>
         </div>
+
         <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
+
         <Controls
           togglePlaying={this.togglePlaying}
           playing={this.state.playing}
@@ -244,6 +246,10 @@ class App extends Component {
           slowDown={this.slowDown}
           wps={this.state.wps}
         />
+
+        {!playing ? (
+          <Highlights text={chosenInput} highlights={highlights} />
+        ) : null}
       </div>
     );
   }
