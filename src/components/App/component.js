@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import Reader from "../Reader/";
+import Reader from "../Reader";
 
 let timeoutInd;
-class App extends Component {
 
+class App extends Component {
   constructor(props) {
     super(props);
 
@@ -14,79 +14,90 @@ class App extends Component {
       input: "text",
       inputs: this.initTexts(props.text, props.abstract)
     };
-    this.nextWord = this.nextWord.bind(this);
-    this.initTexts = this.initTexts.bind(this);
+
     this.extractText = this.extractText.bind(this);
+    this.initTexts = this.initTexts.bind(this);
     this.getInput = this.getInput.bind(this);
-    this.nextBreak = this.nextBreak.bind(this);
     this.getBreaks = this.getBreaks.bind(this);
+    this.nextWord = this.nextWord.bind(this);
+    this.nextBreak = this.nextBreak.bind(this);
+    this.prevBreak = this.prevBreak.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   extractText(text) {
-    if (!text) {
-      
-    }
     let paras;
     let words;
-    if (text.props && text.props.children) {
+    if (text && text.props && text.props.children) {
       console.log(text.props.children);
       paras = text.props.children.map(para => {
-        return para.props.children.length;
+        return para.props.children.split(/\s+/).length;
       });
-      words = text.props.children.reduce(
-        (oldArr, para) => oldArr.concat(para.props.children.split(/\s+/)),
-        []
-      );
-    } else {
-      paras = text.split(/\n/).map(string => string.length);
-      words = text.split(/\s+/);
+      words = text.props.children
+        .reduce(
+          (oldArr, para) =>
+            oldArr.concat(para.props.children.split(/\s+/), [""]),
+          []
+        )
+        .concat("END");
     }
 
     return {
       words: words,
       breaks: paras
     };
-  };
+  }
 
   initTexts(text, abstract) {
     return {
       text: this.extractText(text),
       abstract: this.extractText(abstract)
     };
-  };
+  }
   getInput() {
     const { inputs, input } = this.state;
     return inputs[input]
       ? inputs[input].words
       : ["Incorrect flag in input: " + input];
-  };
+  }
   getBreaks() {
     const { inputs, input } = this.state;
     return inputs[input] ? inputs[input].breaks : [0];
-  };
+  }
   nextWord(ev) {
     const { word, playing, wps } = this.state;
 
-    let nextWord = Math.min(this.getInput().length, word + 1);
-    if (nextWord === this.getInput().length) nextWord = 0;
+    const nextWord = Math.min(this.getInput().length - 1, word + 1);
     this.setState({ word: nextWord });
 
     if (playing) {
       this.timeoutInd = setTimeout(this.nextWord, 1000 / wps);
     }
-  };
+  }
   nextBreak(ev) {
-    const { word, wps, playing } = this.state;
+    const { word } = this.state;
     const breaks = this.getBreaks();
     let nextBreak = 0;
     let i = 0;
     do {
-      nextBreak += breaks[i];
+      nextBreak += breaks[i] + 1;
       i++;
     } while (nextBreak < word);
 
     this.setState({ word: nextBreak });
-  };
+  }
+  prevBreak(ev) {
+    const { word } = this.state;
+    const breaks = this.getBreaks();
+    let nextBreak = 0;
+    let i = 0;
+    while (nextBreak + breaks[i] + 1 < word) {
+      nextBreak += breaks[i] + 1;
+      i++;
+    }
+
+    this.setState({ word: nextBreak });
+  }
   onKeyDown(ev) {
     if (ev.code === "Space") {
       this.setState({ playing: !this.state.playing });
@@ -96,8 +107,10 @@ class App extends Component {
       this.setState({ wps: Math.max(1, this.state.wps - 1) });
     } else if (ev.code === "ArrowRight") {
       this.nextBreak();
+    } else if (ev.code === "ArrowLeft") {
+      this.prevBreak();
     }
-  };
+  }
 
   componentDidMount() {
     document.addEventListener("keydown", this.onKeyDown);
@@ -111,6 +124,13 @@ class App extends Component {
     if (this.state.playing !== state.playing)
       if (this.state.playing) this.nextWord();
       else if (this.timeoutInd) clearTimeout(this.timeoutInd);
+
+    if (
+      this.props.text !== props.text ||
+      this.props.abstract !== props.abstract
+    ) {
+      this.setState({ inputs: this.initTexts(props.text, props.abstract) });
+    }
   }
 
   render() {
@@ -123,6 +143,7 @@ class App extends Component {
         <div>
           <p>Debugger:</p>
           <p>wps: {wps}</p>
+          <p>word: {word}</p>
           <p>playing: {playing ? "true" : "false"}</p>
         </div>
         <Reader word={renderWord} />
