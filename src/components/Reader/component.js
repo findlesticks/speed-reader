@@ -7,6 +7,7 @@ const StyledContainer = styled.div`
   border: 1px solid ${borderColor};
   display: grid;
   grid-template-columns: 1fr min-content 1fr;
+  margin: 32px 0;
 `;
 const StyledText = css`
   font-family: "Lato", sans-serif;

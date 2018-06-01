@@ -13,7 +13,6 @@ export const StyledButton = styled.button`
   border: 2px solid;
   display: inline-block;
   font-family: inherit;
-  height: 40px;
   line-height: 40px;
   margin: 0;
   overflow: hidden;

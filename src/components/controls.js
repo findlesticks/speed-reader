@@ -3,9 +3,14 @@ import styled from 'styled-components';
 
 import { StyledButton, CentredNav } from './toggleButton';
 
+const BigStyledButton = styled(StyledButton)`
+  padding: 4px 32px;
+  font-size: 32px;
+`;
+
 export function PlayButton({ togglePlaying, playing }) {
   const innerText = playing ? 'Pause' : 'Play';
-  return <StyledButton onClick={togglePlaying} selected={playing}>{innerText}</StyledButton>
+  return <BigStyledButton onClick={togglePlaying} selected={playing}>{innerText}</BigStyledButton>
 }
 
 const StyledSpan = styled.span`
@@ -25,8 +30,8 @@ export function SpeedControls({ speedUp, slowDown, wps }) {
 export default function Controls({ togglePlaying, playing, speedUp, slowDown, wps }) {
   return (
     <CentredNav style={{ margin: 'auto' }}>
-      <PlayButton togglePlaying={togglePlaying} playing={playing} />
-      <SpeedControls speedUp={speedUp} slowDown={slowDown} wps={wps} />
+      <div><PlayButton togglePlaying={togglePlaying} playing={playing} /></div>
+      <div><SpeedControls speedUp={speedUp} slowDown={slowDown} wps={wps} /></div>
     </CentredNav>
   )
 }
