@@ -16,7 +16,8 @@ class App extends Component {
       input: TYPES.TEXT,
       inputs: this.initTexts(props.text, props.abstract),
       highlight: false,
-      playToggleFlag: false
+      playToggleFlag: false,
+      spaceDown: false
     };
 
     this.extractText = this.extractText.bind(this);
@@ -74,8 +75,12 @@ class App extends Component {
   nextWord(ev) {
     const { word, playing, wps, highlight } = this.state;
 
-    const nextWord = Math.min(this.getInput().length - 1, word + 1);
-    this.setState({ word: nextWord });
+    const nextWord = word + 1;
+    if (this.getInput().length - 1 < nextWord) {
+      this.setState({ playing: false });
+    } else {
+      this.setState({ word: nextWord });
+    }
 
     if (playing) {
       timeoutInd = setTimeout(this.nextWord, 1000 / wps);
@@ -131,26 +136,26 @@ class App extends Component {
         })
       });
     }
-    console.log("NEW HIGHLIGHTS HERE", highlight);
   }
 
   spaceDown() {
-    this.setState({ playToggleFlag: true });
+    if (!this.state.spaceDown) {
+      this.setState({ spaceDown: true, playToggleFlag: true });
 
-    if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
-    playToggleFlagTimeout = setTimeout(() => {
-      console.log("trigger playToggleFlagTimeout");
-      this.setState({ playToggleFlag: false, playing: true });
-      this.startHighlight();
-    }, 100);
+      if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
+      playToggleFlagTimeout = setTimeout(() => {
+        this.setState({ playToggleFlag: false, playing: true });
+        this.startHighlight();
+      }, 100);
+    }
   }
   spaceUp() {
-    console.log("playToggleFlag", this.state.playToggleFlag);
-
     if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
     if (this.state.playToggleFlag)
       this.setState({ playing: !this.state.playing });
     this.endHighlight();
+
+    this.setState({ spaceDown: false });
   }
 
   onKeyDown(ev) {
