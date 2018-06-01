@@ -10,8 +10,8 @@ export default class HelloWorld extends React.Component {
     this.state = { component: null };
   }
   componentDidMount() {
-    const abstractText = compose(window.jsonData.abstract);
-    const bodyText = compose(window.jsonData.body);
+    const abstractText = window.jsonData.abstract;
+    const bodyText = window.jsonData.body;
     this.setState({ abstractText, bodyText });
   }
   render() {
@@ -21,7 +21,7 @@ export default class HelloWorld extends React.Component {
           id={"1234"}
           text={this.state.bodyText}
           abstract={this.state.abstractText}
-        >{this.state.bodyComponent}</App>
+        />
       );
     }
     return null;
