@@ -19,4 +19,5 @@ export const StyledH1 = styled.h1`
   font-weight: 700;
   margin-bottom: 20px;
   text-align: center;
+  font-family: 'Lato', sans-serif;
 `;

@@ -18,6 +18,7 @@ export const StyledButton = styled.button`
   margin: 0;
   overflow: hidden;
   padding: 0 16px;
+  font-family: 'Lato', sans-serif;
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
   user-select: none;
   background-color: ${props => props.selected ? orange : blue};

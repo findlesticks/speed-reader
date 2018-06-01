@@ -1,4 +1,6 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import { StyledButton, CentredNav } from './toggleButton';
 
 export function PlayButton({ togglePlaying, playing }) {
@@ -6,13 +8,17 @@ export function PlayButton({ togglePlaying, playing }) {
   return <StyledButton onClick={togglePlaying} selected={playing}>{innerText}</StyledButton>
 }
 
+const StyledSpan = styled.span`
+  font-family: "Lato", sans-serif;
+`;
+
 export function SpeedControls({ speedUp, slowDown, wps }) {
   return (
-    <span>
+    <StyledSpan>
       <StyledButton onClick={slowDown}>{'<'}</StyledButton>
       {wps} words per second
       <StyledButton onClick={speedUp}>{'>'}</StyledButton>
-    </span>
+    </StyledSpan>
   )
 }
 
