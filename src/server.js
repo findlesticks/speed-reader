@@ -23,18 +23,25 @@ app.get('/pii/:pii', function (req, res) {
   const { pii } = req.params;
   const abstractUrl = `http://www.local.sdfe.sciencedirect.com:9090/pcp/5042/article/${pii}/abstract`;
   const bodyUrl = `http://www.local.sdfe.sciencedirect.com:9090/pcp/5042/article/${pii}/body`;
+  const metadataUrl = `http://www.local.sdfe.sciencedirect.com:9090/pcp/5042/article/${pii}`;
   const abstractsPromise = axios(abstractUrl);
   const bodyPromise = axios(bodyUrl);
-  return Promise.all([abstractsPromise, bodyPromise])
+  const metadataPromise = axios(metadataUrl);
+  return Promise.all([abstractsPromise, bodyPromise, metadataPromise])
     .then(results => results.map(res => res.data))
-    .then(data => Promise.all(data.map(xmlToJson)))
+    .then(data => {
+      const [abstractXml, bodyXml, metadataJson] = data;
+      const metadataXml = metadataJson.title;
+      const xmls = [abstractXml, bodyXml, metadataXml]
+      return Promise.all(xmls.map(xmlToJson))
+    })
     .then((jsons) => {
-      console.log(jsons[0]);
       const abstract = render(compose(jsons[0])).text();
       const body = render(compose(jsons[1])).text();
+      const title = render(compose(jsons[2])).text();
       res.render('layout', {
         content: ReactDOMServer.renderToString(<HelloWorld />),
-        jsonData: JSON.stringify({ abstract, body }),
+        jsonData: JSON.stringify({ abstract, body, title }),
       });
     }).catch(console.log);
 });

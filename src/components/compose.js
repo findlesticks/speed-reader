@@ -8,6 +8,7 @@ const components = {
   'section-title': skipAll,
   'abstract-sec': skip,
   'simple-para': node('p'),
+  title: node('h1'),
   para: node('p'),
   list: skipAll,
   attachments: skipAll,

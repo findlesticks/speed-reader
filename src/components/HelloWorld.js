@@ -12,7 +12,8 @@ export default class HelloWorld extends React.Component {
   componentDidMount() {
     const abstractText = window.jsonData.abstract;
     const bodyText = window.jsonData.body;
-    this.setState({ abstractText, bodyText });
+    const titleText = window.jsonData.title;
+    this.setState({ abstractText, bodyText, titleText });
   }
   render() {
     if (this.state.abstractText && this.state.bodyText) {
@@ -21,6 +22,7 @@ export default class HelloWorld extends React.Component {
           id={"1234"}
           text={this.state.bodyText}
           abstract={this.state.abstractText}
+          title={this.state.titleText}
         />
       );
     }

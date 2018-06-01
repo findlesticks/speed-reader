@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Reader from "../Reader";
+import ToggleButtons, { TYPES } from './toggleButton'
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -12,7 +13,7 @@ class App extends Component {
       playing: true,
       wps: 6,
       word: -1,
-      input: "text",
+      input: TYPES.TEXT,
       inputs: this.initTexts(props.text, props.abstract)
     };
 
@@ -24,6 +25,7 @@ class App extends Component {
     this.nextBreak = this.nextBreak.bind(this);
     this.prevBreak = this.prevBreak.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.setInput = this.setInput.bind(this);
 
     this.startHighlight = this.startHighlight.bind(this);
     this.endHighlight = this.endHighlight.bind(this);
@@ -52,8 +54,8 @@ class App extends Component {
 
   initTexts(text, abstract) {
     return {
-      text: this.extractText(text),
-      abstract: this.extractText(abstract)
+      [TYPES.TEXT]: this.extractText(text),
+      [TYPES.ABSTRACT]: this.extractText(abstract)
     };
   }
   getInput() {
@@ -151,6 +153,13 @@ class App extends Component {
     }
   }
 
+  setInput(type) {
+    this.setState({
+      input: type,
+      word: 0,
+    });
+  }
+
   componentDidMount() {
     document.addEventListener("keydown", this.onKeyDown);
     document.addEventListener("keyup", this.onKeyDown);
@@ -181,6 +190,8 @@ class App extends Component {
 
     return (
       <div>
+        <h1>{this.props.title}</h1>
+        <ToggleButtons setInput={this.setInput} />
         <div>
           <p>Debugger:</p>
           <p>wps: {wps}</p>
