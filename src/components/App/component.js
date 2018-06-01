@@ -4,6 +4,7 @@ import ToggleButtons, { TYPES } from "../toggleButton";
 import Controls from "../controls";
 import Highlights from "../Highlights";
 import ProgressBar from "../ProgressBar";
+import { GridContainer, GridColumn, StyledH1 } from './styledComponents';
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -230,38 +231,33 @@ class App extends Component {
     const renderWord = chosenInput[word];
 
     return (
-      <div>
-        <h1>{this.props.title}</h1>
-        <ToggleButtons setInput={this.setInput} inputType={this.state.input} />
-        <div>
-          <p>Debugger:</p>
-          <p>wps: {wps}</p>
-          <p>word: {word}</p>
-          <p>playing: {playing ? "true" : "false"}</p>
-        </div>
-
-        <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
-
-        <Controls
-          togglePlaying={this.togglePlaying}
-          playing={this.state.playing}
-          speedUp={this.speedUp}
-          slowDown={this.slowDown}
-          wps={this.state.wps}
-        />
-
-        {!playing ? (
-          <div>
-            <ProgressBar
-              text={chosenInput}
-              highlights={highlights}
-              currentWord={word}
-              setWord={ind => this.setState({ word: ind })}
-            />
-            <Highlights text={chosenInput} highlights={highlights} />
-          </div>
-        ) : null}
-      </div>
+      <GridContainer>
+        <GridColumn>
+          <StyledH1>{this.props.title}</StyledH1>
+          <ToggleButtons setInput={this.setInput} inputType={this.state.input} />
+          <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
+          <Controls
+            togglePlaying={this.togglePlaying}
+            playing={this.state.playing}
+            speedUp={this.speedUp}
+            slowDown={this.slowDown}
+            wps={this.state.wps}
+          />
+          {!playing ? <Highlights text={chosenInput} highlights={highlights} /> : null}
+        </GridColumn>
+        <GridColumn>
+          {!playing ? (
+            <div>
+              <ProgressBar
+                text={chosenInput}
+                highlights={highlights}
+                currentWord={word}
+                setWord={ind => this.setState({ word: ind })}
+              />
+            </div>
+          ) : null}
+        </GridColumn>
+      </GridContainer>
     );
   }
 }

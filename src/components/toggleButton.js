@@ -33,9 +33,7 @@ export const StyledButton = styled.button`
 `;
 
 export const CentredNav = styled.nav`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  text-align: center;
 `;
 
 export default function ToggleButtons({ setInput, inputType }) {
