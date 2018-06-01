@@ -11,6 +11,7 @@ const StyledContainer = styled.div`
 const StyledText = css`
   font-family: "sans-serif";
   font-size: 50px;
+  background: ${props => (props.highlight ? "yellow" : "transparent")};
 `;
 const StyledLeft = styled.span`
   ${StyledText};
@@ -23,6 +24,7 @@ const StyledRight = styled.span`
 const StyledCenter = styled.span`
   ${StyledText};
   color: red;
+  min-height: 59px;
 `;
 const StyledAlign = styled.div`
   text-align: center;
@@ -47,7 +49,7 @@ const ArrowDown = styled.span`
   top: 14px;
 `;
 
-const Reader = ({ word = "" }) => {
+const Reader = ({ word = "", highlight = false }) => {
   const ind = Math.floor(word.length / 3);
 
   const left = word.slice(0, ind);
@@ -61,9 +63,9 @@ const Reader = ({ word = "" }) => {
         <ArrowDown />
       </StyledAlign>
       <span />
-      <StyledLeft>{left}</StyledLeft>
-      <StyledCenter>{middle}</StyledCenter>
-      <StyledRight>{right}</StyledRight>
+      <StyledLeft highlight={highlight}>{left}</StyledLeft>
+      <StyledCenter highlight={highlight}>{middle}</StyledCenter>
+      <StyledRight highlight={highlight}>{right}</StyledRight>
       <span />
       <StyledAlign>
         <ArrowUp />

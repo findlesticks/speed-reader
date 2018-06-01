@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Reader from "../Reader";
-import ToggleButtons, { TYPES } from './toggleButton'
+import ToggleButtons, { TYPES } from "./toggleButton";
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -14,7 +14,9 @@ class App extends Component {
       wps: 6,
       word: -1,
       input: TYPES.TEXT,
-      inputs: this.initTexts(props.text, props.abstract)
+      inputs: this.initTexts(props.text, props.abstract),
+      highlight: false,
+      playToggleFlag: false
     };
 
     this.extractText = this.extractText.bind(this);
@@ -26,6 +28,7 @@ class App extends Component {
     this.prevBreak = this.prevBreak.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.setInput = this.setInput.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
 
     this.startHighlight = this.startHighlight.bind(this);
     this.endHighlight = this.endHighlight.bind(this);
@@ -42,7 +45,7 @@ class App extends Component {
       paras = text.split(/\./).map(para => {
         return para.split(/\s+/).length;
       });
-      words = text.split(/\s+/).concat("END");
+      words = text.split(/\s+/).concat("FIN");
     }
 
     return {
@@ -65,17 +68,20 @@ class App extends Component {
       : ["Incorrect flag in input: " + input];
   }
   getBreaks() {
-    const { inputs, input } = this.state;
+    const { inputs, input, highlight } = this.state;
     return inputs[input] ? inputs[input].breaks : [0];
   }
   nextWord(ev) {
-    const { word, playing, wps } = this.state;
+    const { word, playing, wps, highlight } = this.state;
 
     const nextWord = Math.min(this.getInput().length - 1, word + 1);
     this.setState({ word: nextWord });
 
     if (playing) {
-      this.timeoutInd = setTimeout(this.nextWord, 1000 / wps);
+      timeoutInd = setTimeout(this.nextWord, 1000 / wps);
+    }
+    if (highlight) {
+      this.addHighlight(nextWord);
     }
   }
   nextBreak(ev) {
@@ -104,7 +110,8 @@ class App extends Component {
   }
 
   startHighlight() {
-    this.setState({ highlight: false });
+    this.setState({ highlight: true });
+    this.addHighlight(this.state.word);
   }
   endHighlight() {
     this.setState({ highlight: false });
@@ -116,23 +123,30 @@ class App extends Component {
   addHighlight(word) {
     const { inputs, input } = this.state;
     const highlight = inputs[input] ? inputs[input].highlights : [];
-    highlight.push(word);
-    this.setState({
-      inputs: Object.assign({}, inputs, {
-        highlights: highlight
-      })
-    });
+    if (highlight.indexOf(word) === -1) {
+      highlight.push(word);
+      this.setState({
+        inputs: Object.assign({}, inputs, {
+          highlights: highlight
+        })
+      });
+    }
+    console.log("NEW HIGHLIGHTS HERE", highlight);
   }
 
   spaceDown() {
     this.setState({ playToggleFlag: true });
+
     if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
-    playToggleFlagTimeout = this.setTimeout(() => {
-      this.setState({ playToggleFlag: false });
+    playToggleFlagTimeout = setTimeout(() => {
+      console.log("trigger playToggleFlagTimeout");
+      this.setState({ playToggleFlag: false, playing: true });
       this.startHighlight();
     }, 100);
   }
   spaceUp() {
+    console.log("playToggleFlag", this.state.playToggleFlag);
+
     if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
     if (this.state.playToggleFlag)
       this.setState({ playing: !this.state.playing });
@@ -152,28 +166,33 @@ class App extends Component {
       this.prevBreak();
     }
   }
+  onKeyUp(ev) {
+    if (ev.code === "Space") {
+      this.spaceUp();
+    }
+  }
 
   setInput(type) {
     this.setState({
       input: type,
-      word: 0,
+      word: 0
     });
   }
 
   componentDidMount() {
     document.addEventListener("keydown", this.onKeyDown);
-    document.addEventListener("keyup", this.onKeyDown);
+    document.addEventListener("keyup", this.onKeyUp);
     this.nextWord();
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.onKeyDown);
-    document.removeEventListener("keyup", this.onKeyDown);
-    if (this.timeoutInd) clearTimeout(this.timeoutInd);
+    document.removeEventListener("keyup", this.onKeyUp);
+    if (timeoutInd) clearTimeout(timeoutInd);
   }
   componentDidUpdate(props, state) {
     if (this.state.playing !== state.playing)
       if (this.state.playing) this.nextWord();
-      else if (this.timeoutInd) clearTimeout(this.timeoutInd);
+      else if (timeoutInd) clearTimeout(timeoutInd);
 
     if (
       this.props.text !== props.text ||
@@ -186,6 +205,7 @@ class App extends Component {
   render() {
     const { word, wps, playing } = this.state;
     const chosenInput = this.getInput();
+    const highlights = this.getHighlights();
     const renderWord = chosenInput[word];
 
     return (
@@ -198,7 +218,7 @@ class App extends Component {
           <p>word: {word}</p>
           <p>playing: {playing ? "true" : "false"}</p>
         </div>
-        <Reader word={renderWord} />
+        <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
       </div>
     );
   }
