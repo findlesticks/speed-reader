@@ -28,6 +28,11 @@ const StyledHighlightItem = styled.li`
   line-height: 2;
 `;
 
+const HighlightsHolder = styled.div`
+  clear: both;
+  margin-top: 50px;
+`;
+
 const mergeHighlights = arrMap => {
   const output = [];
   if (arrMap.length === 0) return output;
@@ -78,16 +83,16 @@ const getTextRange = (text, range) => {
 
 const Highlights = ({ text, highlights }) => {
   const texts = mergeHighlights(highlights);
-  return (
-    <div>
+  return texts.length ? (
+    <HighlightsHolder>
       <StyledTitle>Your highlights</StyledTitle>
       <StyledHighlightList>
         {texts.map(range => (
           <StyledHighlightItem>{getTextRange(text, range)}</StyledHighlightItem>
         ))}
       </StyledHighlightList>
-    </div>
-  );
+    </HighlightsHolder>
+  ) : null;
 };
 
 export default Highlights;
