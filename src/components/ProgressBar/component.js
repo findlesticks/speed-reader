@@ -4,6 +4,8 @@ import styled, { css } from "styled-components";
 const StyledText = css`
   font-family: "sans-serif";
   font-size: 25px;
+  font-size: 6px;
+  cursor: pointer;
 `;
 const StyledOverview = styled.div`
   font-family: "sans-serif";
@@ -15,24 +17,30 @@ const HighlightedText = styled.a`
   ${StyledText};
   background: yellow;
 `;
-const CurrentText = styled.a`
-  ${StyledText};
-  background: red;
+const CurrentText = styled.span`
+  color: #e9711c;
 `;
 
-const ProgressBar = ({ text, highlights, currentWord }) => {
+const ProgressBar = ({ text, highlights, currentWord, setWord }) => {
   return (
     <div>
-      {text.map(
-        (word, ind) =>
+      {text.map((word, ind) => {
+        const outputWord = word.replace(/[a-z|A-Z|0-9]/g, "#");
+        const outputEle =
           ind === currentWord ? (
-            <CurrentText>{word} </CurrentText>
-          ) : highlights.indexOf(ind) !== -1 ? (
-            <HighlightedText>{word} </HighlightedText>
+            <CurrentText>{outputWord}</CurrentText>
           ) : (
-            <SurroundText>{word} </SurroundText>
-          )
-      )}
+            outputWord
+          );
+
+        return highlights.indexOf(ind) !== -1 ? (
+          <HighlightedText onClick={() => setWord(ind)}>
+            {outputEle}{" "}
+          </HighlightedText>
+        ) : (
+          <SurroundText onClick={() => setWord(ind)}>{outputEle} </SurroundText>
+        );
+      })}
     </div>
   );
 };

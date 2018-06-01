@@ -254,6 +254,7 @@ class App extends Component {
               text={chosenInput}
               highlights={highlights}
               currentWord={word}
+              setWord={ind => this.setState({ word: ind })}
             />
             <Highlights text={chosenInput} highlights={highlights} />
           </div>
