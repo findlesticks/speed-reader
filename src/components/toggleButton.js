@@ -6,6 +6,9 @@ export const TYPES = {
   ABSTRACT: 'Abstract',
 };
 
+const orange = '#e9711c';
+const blue = '#007398';
+
 const StyledButton = styled.button`
   border: 2px solid;
   display: inline-block;
@@ -17,8 +20,8 @@ const StyledButton = styled.button`
   padding: 0 16px;
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
   user-select: none;
-  background-color: #007398;
-  border-color: #007398;
+  background-color: ${props => props.selected ? '#e9711c' : '#007398'};
+  border-color: ${props => props.selected ? '#e9711c' : '#007398'};
   color: #ffffff;
   cursor: pointer;
   margin-right: 8px;
@@ -29,14 +32,16 @@ const StyledButton = styled.button`
   }
 `;
 
-export default function ToggleButtons({ setInput }) {
+export default function ToggleButtons({ setInput, inputType }) {
   return (
     <div>
       <StyledButton
         onClick={() => setInput(TYPES.ABSTRACT)}
+        selected={inputType === TYPES.ABSTRACT}
       >{TYPES.ABSTRACT}</StyledButton>
       <StyledButton
         onClick={() => setInput(TYPES.TEXT)}
+        selected={inputType === TYPES.TEXT}
       >{TYPES.TEXT}</StyledButton>
     </div>
   )

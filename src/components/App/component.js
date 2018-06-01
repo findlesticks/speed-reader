@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Reader from "../Reader";
-import ToggleButtons, { TYPES } from "./toggleButton";
+import ToggleButtons, { TYPES } from "../toggleButton";
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -211,7 +211,7 @@ class App extends Component {
     return (
       <div>
         <h1>{this.props.title}</h1>
-        <ToggleButtons setInput={this.setInput} />
+        <ToggleButtons setInput={this.setInput} inputType={this.state.input} />
         <div>
           <p>Debugger:</p>
           <p>wps: {wps}</p>
