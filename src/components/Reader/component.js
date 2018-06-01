@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
   grid-template-columns: 1fr min-content 1fr;
 `;
 const StyledText = css`
-  font-family: "sans-serif";
+  font-family: "Lato", sans-serif;
   font-size: 50px;
   background: ${props => (props.highlight ? "yellow" : "transparent")};
 `;

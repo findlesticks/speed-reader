@@ -2,13 +2,13 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 const StyledText = css`
-  font-family: "sans-serif";
+  font-family: "Lato", sans-serif;
   font-size: 25px;
   font-size: 6px;
   cursor: pointer;
 `;
 const StyledOverview = styled.div`
-  font-family: "sans-serif";
+  font-family: "Lato", sans-serif;
 `;
 const SurroundText = styled.a`
   ${StyledText};

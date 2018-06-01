@@ -2,11 +2,11 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 const StyledText = css`
-  font-family: "sans-serif";
+  font-family: "Lato", sans-serif;
   font-size: 25px;
 `;
 const StyledTitle = styled.h3`
-  font-family: "sans-serif";
+  font-family: "Lato", sans-serif;
 `;
 const SurroundText = styled.span`
   ${StyledText};
