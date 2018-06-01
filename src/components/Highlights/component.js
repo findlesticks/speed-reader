@@ -25,7 +25,7 @@ const StyledHighlightItem = styled.li`
   margin: 20px 0;
   padding: 20px;
   border: 2px solid #ccc;
-  line-height: 2;
+  line-height: 1.5;
 `;
 
 const HighlightsHolder = styled.div`
@@ -87,8 +87,10 @@ const Highlights = ({ text, highlights }) => {
     <HighlightsHolder>
       <StyledTitle>Your highlights</StyledTitle>
       <StyledHighlightList>
-        {texts.map(range => (
-          <StyledHighlightItem>{getTextRange(text, range)}</StyledHighlightItem>
+        {texts.map((range, ind) => (
+          <StyledHighlightItem key={ind}>
+            {getTextRange(text, range)}
+          </StyledHighlightItem>
         ))}
       </StyledHighlightList>
     </HighlightsHolder>

@@ -101,11 +101,11 @@ class App extends Component {
     let nextBreak = 0;
     let i = 0;
     do {
-      nextBreak += breaks[i];
+      nextBreak += breaks[i] - 1;
       i++;
-    } while (nextBreak < word);
+    } while (nextBreak <= word);
 
-    this.setState({ word: nextBreak });
+    this.setState({ word: nextBreak + 1 });
   }
   prevBreak(ev) {
     const { word } = this.state;
@@ -113,11 +113,11 @@ class App extends Component {
     let nextBreak = 0;
     let i = 0;
     while (nextBreak + breaks[i] < word) {
-      nextBreak += breaks[i];
+      nextBreak += breaks[i] - 1;
       i++;
     }
 
-    this.setState({ word: nextBreak });
+    this.setState({ word: nextBreak === 0 ? 0 : nextBreak + 1 });
   }
 
   startHighlight() {
@@ -153,9 +153,9 @@ class App extends Component {
 
       if (playToggleFlagTimeout) clearTimeout(playToggleFlagTimeout);
       playToggleFlagTimeout = setTimeout(() => {
-        this.setState({ playToggleFlag: false, playing: true });
         this.startHighlight();
-      }, 100);
+        this.setState({ playToggleFlag: false, playing: true });
+      }, 150);
     }
   }
   spaceUp() {
@@ -175,6 +175,7 @@ class App extends Component {
   onKeyDown(ev) {
     if (ev.code === "Space") {
       this.spaceDown();
+      ev.preventDefault();
     } else if (ev.code === "ArrowUp") {
       this.speedUp();
     } else if (ev.code === "ArrowDown") {
@@ -188,6 +189,7 @@ class App extends Component {
   onKeyUp(ev) {
     if (ev.code === "Space") {
       this.spaceUp();
+      ev.preventDefault();
     }
   }
 

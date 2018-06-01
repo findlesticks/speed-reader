@@ -34,11 +34,13 @@ const ProgressBar = ({ text, highlights, currentWord, setWord }) => {
           );
 
         return highlights.indexOf(ind) !== -1 ? (
-          <HighlightedText onClick={() => setWord(ind)}>
+          <HighlightedText key={ind} onClick={() => setWord(ind)}>
             {outputEle}{" "}
           </HighlightedText>
         ) : (
-          <SurroundText onClick={() => setWord(ind)}>{outputEle} </SurroundText>
+          <SurroundText key={ind} onClick={() => setWord(ind)}>
+            {outputEle}{" "}
+          </SurroundText>
         );
       })}
     </div>
