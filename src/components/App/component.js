@@ -3,6 +3,7 @@ import Reader from "../Reader";
 import ToggleButtons, { TYPES } from "../toggleButton";
 import Controls from "../controls";
 import Highlights from "../Highlights";
+import ProgressBar from "../ProgressBar";
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -248,7 +249,14 @@ class App extends Component {
         />
 
         {!playing ? (
-          <Highlights text={chosenInput} highlights={highlights} />
+          <div>
+            <ProgressBar
+              text={chosenInput}
+              highlights={highlights}
+              currentWord={word}
+            />
+            <Highlights text={chosenInput} highlights={highlights} />
+          </div>
         ) : null}
       </div>
     );
