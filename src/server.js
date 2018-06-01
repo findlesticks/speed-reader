@@ -4,6 +4,11 @@ import HelloWorld from './components/HelloWorld';
 import express from 'express';
 import axios from 'axios';
 import xmlToJson from 'sd-xml-parser';
+import Enzyme, { mount, render, shallow} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter() });
+
+import compose from './components/compose';
 
 let app = express();
 
@@ -24,9 +29,12 @@ app.get('/pii/:pii', function (req, res) {
     .then(results => results.map(res => res.data))
     .then(data => Promise.all(data.map(xmlToJson)))
     .then((jsons) => {
+      console.log(jsons[0]);
+      const abstract = render(compose(jsons[0])).text();
+      const body = render(compose(jsons[1])).text();
       res.render('layout', {
         content: ReactDOMServer.renderToString(<HelloWorld />),
-        jsonData: JSON.stringify(jsons),
+        jsonData: JSON.stringify({ abstract, body }),
       });
     }).catch(console.log);
 });

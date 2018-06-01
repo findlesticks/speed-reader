@@ -27,5 +27,5 @@ export default function compose(content) {
   if (!content) {
     return null;
   }
-  return <div><XocsCore content={content} components={components} /></div>;
+  return <XocsCore content={content} components={components} />;
 }
