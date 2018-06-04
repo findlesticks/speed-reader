@@ -21,3 +21,14 @@ export const StyledH1 = styled.h1`
   text-align: center;
   font-family: 'Lato', sans-serif;
 `;
+
+const orange = '#e9711c';
+const blue = '#007398';
+
+export const StyledLink = styled.a`
+  color: ${blue};
+  text-decoration: none;
+  &:hover {
+    color: ${orange};
+  }
+`;

@@ -4,7 +4,7 @@ import ToggleButtons, { TYPES } from "../toggleButton";
 import Controls from "../controls";
 import Highlights from "../Highlights";
 import ProgressBar from "../ProgressBar";
-import { GridContainer, GridColumn, StyledH1 } from './styledComponents';
+import { GridContainer, GridColumn, StyledH1, StyledLink } from './styledComponents';
 
 let timeoutInd;
 let playToggleFlagTimeout;
@@ -233,7 +233,10 @@ class App extends Component {
     return (
       <GridContainer>
         <GridColumn>
-          <StyledH1>{this.props.title}</StyledH1>
+          <StyledH1><StyledLink
+            target="_blank"
+            href={`https://www.sciencedirect.com/science/article/pii/${window.location.href.split('pii/')[1]}`}
+          >{this.props.title}</StyledLink></StyledH1>
           <ToggleButtons setInput={this.setInput} inputType={this.state.input} />
           <Reader word={renderWord} highlight={highlights.indexOf(word) !== -1} />
           <Controls
